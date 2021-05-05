@@ -1,6 +1,8 @@
 # tich-hop-du-lieu
 ## Cài thư viện
 cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
+## Run docker
+- Lệnh run: docker run -p 8050:8050 scrapinghub/splash
 ## Hướng dẫn crawl
 - cd vào mục crawl
 - Câu lệnh chạy xuất ra file csv : scrapy crawl Name -o Name.csv
