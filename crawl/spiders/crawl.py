@@ -62,7 +62,7 @@ class TheGioiDiDong_iphone(scrapy.Spider):
 
 
 class TheGioiDiDong_macbook(scrapy.Spider):
-    name = 'ipad_TGDD'
+    name = 'mackbook_TGDD'
     start_urls = ["https://www.thegioididong.com/laptop-apple-macbook"]
 
     def start_requests(self):
@@ -692,6 +692,80 @@ class Cell_phone_iphone(scrapy.Spider):
                 "Thẻ sim" : thongtin.find_all('tr')[8].find_all('td')[1].text,
                 'Hệ điều hành': thongtin.find_all('tr')[9].find_all('td')[1].text,
             }
+        if str(response.css('ul.pagination')[1].css('a::text').get()) == 'Tiếp ':
+            yield SplashRequest(
+                response.url,
+                callback=self.parse,
+                headers=headers,
+                meta={
+                    "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+                },
+            )
+
+
+class Cell_phone_macbook(scrapy.Spider):
+    name = 'cell_phone_macbook'
+    start_urls = ["https://cellphones.com.vn/laptop/mac.html"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(1))
+                assert(splash:runjs('document.getElementsByClassName("pagination")[1].getElementsByTagName("a")[0].click();'))
+                assert(splash:wait(1))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        items = response.css('div.products-container')[0].css('li')
+        for item in items:
+            price = str(item.css('span.price::text').get()).replace('\xa0₫', ' VNĐ')
+            link = item.css('div.lt-product-group-image')[0].css('a').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            thongtin = soup.find('div', class_='content')
+            if price == 'Đăng ký nhận tin':
+                CPU = None
+                RAM = None
+                O_cung = None
+                Kich_thuoc_man_hinh = None
+                Do_phan_giai = None
+                He_dieu_hanh = None
+            else:
+                CPU = thongtin.find_all('tr')[0].find_all('td')[1].text
+                RAM = thongtin.find_all('tr')[2].find_all('td')[1].text
+                O_cung = thongtin.find_all('tr')[3].find_all('td')[1].text
+                Kich_thuoc_man_hinh = thongtin.find_all('tr')[4].find_all('td')[1].text
+                Do_phan_giai = thongtin.find_all('tr')[5].find_all('td')[1].text
+                He_dieu_hanh = thongtin.find_all('tr')[7].find_all('td')[1].text
+            yield {
+                "Tên sản phẩm": item.css('div.lt-product-group-info')[0].css('h3::text').get(),
+                "Giá sản phẩm": price,
+                "CPU": CPU,
+                "RAM": RAM,
+                'Ổ cứng' : O_cung,
+                'Kích thước màn hình': Kich_thuoc_man_hinh,
+                "Độ phân giải màn hình": Do_phan_giai,
+                "Hệ điều hành": He_dieu_hanh,
+                "Link": link
+            }
+
         if str(response.css('ul.pagination')[1].css('a::text').get()) == 'Tiếp ':
             yield SplashRequest(
                 response.url,

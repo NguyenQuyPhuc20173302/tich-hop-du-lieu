@@ -18,3 +18,5 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - click_buy_iphone
 - click_buy_apple_watch
 - cell_phone_iphone
+- cell_phone_iphone
+- cell_phone_macbook
