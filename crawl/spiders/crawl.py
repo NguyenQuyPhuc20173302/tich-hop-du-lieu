@@ -856,3 +856,74 @@ class dienthoaimoi_iphone(scrapy.Spider):
                 "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
             },
         )
+
+
+class dienthoaimoi_ipad(scrapy.Spider):
+    name = 'dienthoaimoi_ipad'
+    start_urls = ["https://dienthoaimoi.vn/tablet--may-tinh-bang-apple-ipad-pcm137.html"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(2))
+                assert(splash:runjs('document.getElementsByClassName("next-page")[0].click();'))
+                assert(splash:wait(3))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        items = response.css('div.product_grid')[0].css('div.item')
+        for item in items:
+            price = item.css('div.price_current::text').get()
+            link = item.css('a.name').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            thongtins = soup.find('table', class_='charactestic_table').find_all('tr')
+            loai_man_hinh= ''
+            mau_man_hinh = ''
+            CPU = ''
+            He_dieu_hanh =''
+            for thongtin in thongtins:
+                if str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Loại màn hình':
+                    loai_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Màu màn hình':
+                    mau_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Loại CPU (Chipset)':
+                    CPU = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Hệ điều hành':
+                    He_dieu_hanh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
+
+            yield {
+                "Tên sản phẩm" : str(item.css('h2 a::text').get()).replace('\n', '').replace('\t', ''),
+                "Giá sản phẩm": price.replace('₫', ' VNĐ'),
+                "Loại màn hình": (loai_man_hinh=='' and None or loai_man_hinh),
+                "Màu màn hình": (mau_man_hinh=='' and None or mau_man_hinh),
+                "CPU": (CPU ==  '' and None or CPU),
+                'Hệ điều hành': (He_dieu_hanh == ''  and None or He_dieu_hanh),
+                "Link": link
+            }
+
+        yield SplashRequest(
+            response.url,
+            callback=self.parse,
+            headers=headers,
+            meta={
+                "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+            },
+        )
