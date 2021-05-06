@@ -2,6 +2,7 @@
 ## Cài thư viện
 cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 ## Run docker
+- Cài đặt docker
 - Lệnh run: docker run -p 8050:8050 scrapinghub/splash
 ## Hướng dẫn crawl
 - cd vào mục crawl
@@ -20,3 +21,4 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - cell_phone_iphone
 - cell_phone_iphone
 - cell_phone_macbook
+- dienthoaimoi_iphon
