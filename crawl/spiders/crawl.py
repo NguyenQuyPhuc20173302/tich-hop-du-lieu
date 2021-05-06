@@ -682,14 +682,14 @@ class Cell_phone_iphone(scrapy.Spider):
                 "Link": link,
                 "Giá sản phẩm": price.replace('\xa0₫', ' VNĐ'),
                 "Kích thước màn hình": thongtin.find_all('tr')[0].find_all('td')[1].text,
-                "Công nghệ màn hình" : thongtin.find_all('tr')[1].find_all('td')[1].text,
+                "Công nghệ màn hình": thongtin.find_all('tr')[1].find_all('td')[1].text,
                 "Camera sau": thongtin.find_all('tr')[2].find_all('td')[1].text,
-                "Camera trước":  thongtin.find_all('tr')[3].find_all('td')[1].text,
-                "Chip" : thongtin.find_all('tr')[4].find_all('td')[1].text,
-                "Ram" : thongtin.find_all('tr')[5].find_all('td')[1].text,
-                "Bộ nhớ trong" : thongtin.find_all('tr')[6].find_all('td')[1].text,
-                "Pin" : thongtin.find_all('tr')[7].find_all('td')[1].text,
-                "Thẻ sim" : thongtin.find_all('tr')[8].find_all('td')[1].text,
+                "Camera trước": thongtin.find_all('tr')[3].find_all('td')[1].text,
+                "Chip": thongtin.find_all('tr')[4].find_all('td')[1].text,
+                "Ram": thongtin.find_all('tr')[5].find_all('td')[1].text,
+                "Bộ nhớ trong": thongtin.find_all('tr')[6].find_all('td')[1].text,
+                "Pin": thongtin.find_all('tr')[7].find_all('td')[1].text,
+                "Thẻ sim": thongtin.find_all('tr')[8].find_all('td')[1].text,
                 'Hệ điều hành': thongtin.find_all('tr')[9].find_all('td')[1].text,
             }
         if str(response.css('ul.pagination')[1].css('a::text').get()) == 'Tiếp ':
@@ -759,7 +759,7 @@ class Cell_phone_macbook(scrapy.Spider):
                 "Giá sản phẩm": price,
                 "CPU": CPU,
                 "RAM": RAM,
-                'Ổ cứng' : O_cung,
+                'Ổ cứng': O_cung,
                 'Kích thước màn hình': Kich_thuoc_man_hinh,
                 "Độ phân giải màn hình": Do_phan_giai,
                 "Hệ điều hành": He_dieu_hanh,
@@ -816,26 +816,44 @@ class dienthoaimoi_iphone(scrapy.Spider):
             thongtins = soup.find('table', class_='charactestic_table').find_all('tr')
             pin = ''
             for thongtin in thongtins:
-                if str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Công nghệ màn hình':
-                    Cong_nghe_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Độ phân giải':
-                    Do_phan_giai = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Màn hình rộng':
-                    Kich_thuoc_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Camera sau':
-                    Camera_sau = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Camera trước':
-                    Camera_truoc = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Camera trước':
-                    Camera_truoc = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Đèn Flash':
+                if str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                    '') == 'Công nghệ màn hình':
+                    Cong_nghe_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n',
+                                                                                                        '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Độ phân giải':
+                    Do_phan_giai = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Màn hình rộng':
+                    Kich_thuoc_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n',
+                                                                                                         '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Camera sau':
+                    Camera_sau = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                                  '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Camera trước':
+                    Camera_truoc = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Camera trước':
+                    Camera_truoc = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Đèn Flash':
                     flash = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Hệ điều hành':
-                    he_dieu_hanh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Dung lượng pin':
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Hệ điều hành':
+                    he_dieu_hanh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Dung lượng pin':
                     pin = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
             yield {
-                "Tên sản phẩm" : str(item.css('h2 a::text').get()).replace('\n', '').replace('\t', ''),
+                "Tên sản phẩm": str(item.css('h2 a::text').get()).replace('\n', '').replace('\t', ''),
                 "Giá sản phẩm": price.replace('₫', ' VNĐ'),
                 "Công nghệ màn hình": Cong_nghe_man_hinh,
                 "Độ phân giải": Do_phan_giai,
@@ -843,7 +861,7 @@ class dienthoaimoi_iphone(scrapy.Spider):
                 "Camera sau": Camera_sau,
                 "Camera trước": Camera_truoc,
                 "Đèn flash": flash,
-                "Pin": (pin =='' and None or pin),
+                "Pin": (pin == '' and None or pin),
                 "Hệ điều hành": he_dieu_hanh,
                 "Link": link
             }
@@ -895,27 +913,122 @@ class dienthoaimoi_ipad(scrapy.Spider):
             req = requests.get(link, headers=headers)
             soup = BeautifulSoup(req.text, "lxml")
             thongtins = soup.find('table', class_='charactestic_table').find_all('tr')
-            loai_man_hinh= ''
+            loai_man_hinh = ''
             mau_man_hinh = ''
             CPU = ''
-            He_dieu_hanh =''
+            He_dieu_hanh = ''
             for thongtin in thongtins:
-                if str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Loại màn hình':
-                    loai_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Màu màn hình':
-                    mau_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Loại CPU (Chipset)':
+                if str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                    '') == 'Loại màn hình':
+                    loai_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Màu màn hình':
+                    mau_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Loại CPU (Chipset)':
                     CPU = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
-                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r', '') == 'Hệ điều hành':
-                    He_dieu_hanh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Hệ điều hành':
+                    He_dieu_hanh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
 
             yield {
-                "Tên sản phẩm" : str(item.css('h2 a::text').get()).replace('\n', '').replace('\t', ''),
+                "Tên sản phẩm": str(item.css('h2 a::text').get()).replace('\n', '').replace('\t', ''),
                 "Giá sản phẩm": price.replace('₫', ' VNĐ'),
-                "Loại màn hình": (loai_man_hinh=='' and None or loai_man_hinh),
-                "Màu màn hình": (mau_man_hinh=='' and None or mau_man_hinh),
-                "CPU": (CPU ==  '' and None or CPU),
-                'Hệ điều hành': (He_dieu_hanh == ''  and None or He_dieu_hanh),
+                "Loại màn hình": (loai_man_hinh == '' and None or loai_man_hinh),
+                "Màu màn hình": (mau_man_hinh == '' and None or mau_man_hinh),
+                "CPU": (CPU == '' and None or CPU),
+                'Hệ điều hành': (He_dieu_hanh == '' and None or He_dieu_hanh),
+                "Link": link
+            }
+
+        yield SplashRequest(
+            response.url,
+            callback=self.parse,
+            headers=headers,
+            meta={
+                "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+            },
+        )
+
+
+class dienthoaimoi_applewatch(scrapy.Spider):
+    name = 'dienthoaimoi_applewatch'
+    start_urls = ["https://dienthoaimoi.vn/dong-ho-apple-watch-pc298.html"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(2))
+                assert(splash:runjs('document.getElementsByClassName("next-page")[0].click();'))
+                assert(splash:wait(3))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        items = response.css('div.product_grid')[0].css('div.item')
+        for item in items:
+            price = item.css('div.price_current::text').get()
+            link = item.css('a.name').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            thongtins = soup.find('table', class_='charactestic_table').find_all('tr')
+            man_hinh = ''
+            kich_thuoc_man_hinh = ''
+            thoi_gian_su_dung = ''
+            CPU = ''
+            He_dieu_hanh = ''
+            ngon_ngu = ''
+            for thongtin in thongtins:
+                if str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                    '') == 'Màn hình':
+                    man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                                '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Kích thước màn hình':
+                    kich_thuoc_man_hinh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n',
+                                                                                                         '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Thời gian sử dụng':
+                    thoi_gian_su_dung = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n',
+                                                                                                       '').replace('\r',
+                                                                                                                   '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Hệ điều hành':
+                    He_dieu_hanh = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace(
+                        '\r', '')
+                elif str(thongtin.find_all('td')[0].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                      '') == 'Ngôn ngữ':
+                    ngon_ngu = str(thongtin.find_all('td')[1].text).replace('\t', '').replace('\n', '').replace('\r',
+                                                                                                                '')
+
+            yield {
+                "Tên sản phẩm": str(item.css('h2 a::text').get()).replace('\n', '').replace('\t', ''),
+                "Giá sản phẩm": price.replace('₫', ' VNĐ'),
+                "màn hình": (man_hinh == '' and None or man_hinh),
+                "Kích thước màn hình": (kich_thuoc_man_hinh == '' and None or kich_thuoc_man_hinh),
+                "Thời gian sử dụng": (thoi_gian_su_dung == '' and None or thoi_gian_su_dung),
+                'Hệ điều hành': (He_dieu_hanh == '' and None or He_dieu_hanh),
+                "Ngôn ngữ": (ngon_ngu == '' and None or ngon_ngu),
                 "Link": link
             }
 

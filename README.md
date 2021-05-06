@@ -23,3 +23,4 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - cell_phone_macbook
 - dienthoaimoi_iphon
 - dienthoaimoi_ipad
+- dienthoaimoi_applewatch
