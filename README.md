@@ -25,6 +25,10 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - dienthoaimoi_ipad
 - dienthoaimoi_applewatch
 - dien_may_xanh_iphone
+- onewaymobile_iphone
+- onewaymobile_watch
+- nguyenkim_iphone
+- nguyenkim_watch
 
 ## apple watch
 - Tên sản phẩm
@@ -34,5 +38,19 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - Pin
 - Tính năng
 - Hỗ trợ sim
+- Bluetooth
+- Link
+
+## iphone
+- Tên sản phẩm
+- Giá sản phẩm
+- Kích thước màn hình
+- Độ phân giải màn hình
+- CPU
+- Ram
+- Bộ nhớ trong
+- Camera sau
+- Camera trước
+- Pin
 - Bluetooth
 - Link
