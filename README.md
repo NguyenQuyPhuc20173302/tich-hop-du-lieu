@@ -25,3 +25,14 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - dienthoaimoi_ipad
 - dienthoaimoi_applewatch
 - dien_may_xanh_iphone
+
+## apple watch
+- Tên sản phẩm
+- Giá sản phẩm
+- Loại màn hình
+- Chip
+- Pin
+- Tính năng
+- Hỗ trợ sim
+- Bluetooth
+- Link

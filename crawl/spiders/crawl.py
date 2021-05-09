@@ -1092,3 +1092,131 @@ class dien_may_xanh_iphone(scrapy.Spider):
                 'Sạc': str(thongtins.css('span::text')[4].get()).split(', ')[1].replace('Sạc ', '')
             }
 
+
+class hoanghamobile_iphone(scrapy.Spider):
+    name = 'hoanghamobile_iphone'
+    start_urls = ["https://hoanghamobile.com/dien-thoai-di-dong/iphone"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(1))
+                assert(splash:runjs('for(var i = 0 ; i < 3 ; i ++){document.getElementById("page-pager").getElementsByTagName("a")[0].click();}'))
+                assert(splash:wait(4))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+                # endpoint="render.html",
+                meta={
+                    "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+                },
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        items = response.css('div.list-product')[0].css('div.item')
+        for item in items:
+            link = item.css('div.info')[0].css('a').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            yield {
+                "Tên sản phẩm": item.css('div.info a::text').get(),
+                "Giá sản phẩm": str(item.css('span.price strong::text').get()).replace('₫', ' VNĐ'),
+                "Link": link
+            }
+
+
+class onewaymobile_watch(scrapy.Spider):
+    name = 'onewaymobile_watch'
+    start_urls = ["https://onewaymobile.vn/apple-watch-pc61.html"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(2))
+                assert(splash:runjs('document.getElementsByClassName("next-page")[0].getElementsByTagName("i")[0].click();'))
+                assert(splash:wait(2))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/50.0.2661.102 Safari/537.36'}
+        items = response.xpath('//*[@id="home-product-list"]/div').css('div.image-check')
+        for item in items:
+            link = item.css('div.title-product')[0].css('a').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            loai_man_hinh = ''
+            chip = ''
+            tinh_nang_khac = ''
+            pin = ''
+            bluetooth = ''
+            ho_tro_sim = ''
+            try:
+                informations = soup.find_all('table', class_='shop_attributes')[1].find_all('tr')
+                for information in informations:
+                    if information.find('th').text == 'Loại màn hình' or information.find('th').text == 'Kiểu màn hình':
+                        loai_man_hinh = information.find('p').text
+                    elif information.find('th').text == 'Chipset' or information.find('th').text == 'Chip xử lý (CPU)':
+                        chip = information.find('p').text
+                    elif information.find('th').text == 'Tính năng khác':
+                        tinh_nang_khac = information.find('p').text
+                    elif information.find('th').text == 'Dung lượng pin (mAh)' or information.find('th').text == 'Pin':
+                        pin = information.find('p').text
+                    elif information.find('th').text == 'Bluetooth':
+                        bluetooth = information.find('p').text
+                    elif information.find('th').text == 'Hỗ trợ nhiều sim':
+                        ho_tro_sim = information.find('p').text
+            except:
+                print("error: " + str(link))
+
+            yield {
+                "Tên sản phẩm": item.css('div.title-product')[0].css('a::text').get(),
+                "Giá sản phẩm": str(item.css('span.final-price::text').get()).replace('đ', ' VNĐ'),
+                "Loại màn hình": loai_man_hinh,
+                "Chip": chip,
+                "Tính năng khác": tinh_nang_khac,
+                "Pin": pin,
+                "Bluetooth": bluetooth,
+                "Hỗ trợ sim": ho_tro_sim,
+                "Link": link
+            }
+
+        yield SplashRequest(
+            response.url,
+            callback=self.parse,
+            headers=headers,
+            meta={
+                "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+            },
+        )
