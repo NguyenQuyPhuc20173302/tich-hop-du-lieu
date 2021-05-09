@@ -29,6 +29,8 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - onewaymobile_watch
 - nguyenkim_iphone
 - nguyenkim_watch
+- truesmart_iphone
+- iphone_24hstore
 
 ## apple watch
 - Tên sản phẩm

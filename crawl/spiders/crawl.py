@@ -1455,7 +1455,7 @@ class nguyenkim_iphone(scrapy.Spider):
                 "Giá sản phẩm": str(item.css('p.final-price::text').get()).replace('đ', ' VNĐ'),
                 "CPU": CPU,
                 "Ram": Ram,
-                "Bộ nhớ trong":ROM,
+                "Bộ nhớ trong": ROM,
                 "Kích thước màn hình": kich_thuoc_man_hinh,
                 "Độ phân giải màn hình": do_phan_giai_man_hinh,
                 "Camera sau": Camera_sau,
@@ -1473,3 +1473,309 @@ class nguyenkim_iphone(scrapy.Spider):
                 "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
             },
         )
+
+
+class truesmart_iphone(scrapy.Spider):
+    name = 'truesmart_iphone'
+    start_urls = [
+        "https://www.truesmart.com.vn/dien-thoai/iphone/",
+        "https://www.truesmart.com.vn/iphone/page-2.html",
+        "https://www.truesmart.com.vn/iphone/page-3.html",
+        "https://www.truesmart.com.vn/iphone/page-4.html",
+        "https://www.truesmart.com.vn/iphone/page-5.html"
+    ]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(2))
+                assert(splash:runjs('document.getElementsByClassName("nki-arow-rounded-next")[0].click();'))
+                assert(splash:wait(2))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/50.0.2661.102 Safari/537.36'}
+        items = response.css('ul.pul')[0].css('li.c')
+        for item in items:
+            Ram = ''
+            CPU = ''
+            kich_thuoc_man_hinh = ''
+            ROM = ''
+            do_phan_giai_man_hinh = ''
+            Pin = ''
+            Camera_sau = ''
+            Camera_truoc = ''
+            bluetooth = ''
+            link = 'https://www.truesmart.com.vn' + str(item.css('strong.t')[0].css('a').attrib['href'])
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            informations = soup.find('div', class_='cp1').find_all('tr')
+            for information in informations:
+                if str(information.find_all('td')[0].text).replace('\n', '').replace('\t', '') == 'Bộ nhớ trong' or str(
+                        information.find_all('td')[0].text).replace('\n', '').replace('\t', '') == 'Bộ nhớ trong:':
+                    ROM = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n',
+                                                                                       '') == 'Kích thước màn hình' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n',
+                                                                                          '') == 'Kích thước màn hình:':
+                    kich_thuoc_man_hinh = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n',
+                                                                                       '') == 'Độ phân giải màn hình' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace(
+                            '\n', '') == 'Độ phân giải màn hình:':
+                    do_phan_giai_man_hinh = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Dung lượng pin' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n',
+                                                                                          '') == 'Dung lương pin:' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Pin:' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Pin':
+                    Pin = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Camera sau:' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Camera sau':
+                    Camera_sau = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Camera trước:' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'Camera trước':
+                    Camera_truoc = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'CPU:' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'CPU':
+                    CPU = information.find_all('td')[1].text
+                elif str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'RAM:' or \
+                        str(information.find_all('td')[0].text).replace('\t', '').replace('\n', '') == 'RAM':
+                    Ram = information.find_all('td')[1].text
+
+            yield {
+                'Tên sản phẩm': item.css('strong.t')[0].css('a::text').get(),
+                'Giá sản phẩm': str(item.css('b.b::text').get()).replace('₫', 'VNĐ'),
+                'Bộ nhớ trong': ROM,
+                'Độ phân giải màm hình': do_phan_giai_man_hinh,
+                'Kích thước mnaf hình': kich_thuoc_man_hinh,
+                'Camera sau': Camera_sau,
+                'Camera trước': Camera_truoc,
+                "CPU": CPU,
+                "RAM": Ram,
+                "Pin": Pin,
+                'Link': link
+            }
+
+
+class iphone_24hstore(scrapy.Spider):
+    name = 'iphone_24hstore'
+    start_urls = ["https://24hstore.vn/dien-thoai-iphone-apple"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(1))
+                assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementById("load_more_button").click();}'))
+                assert(splash:wait(1))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+                meta={
+                    "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+                },
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
+        items = response.xpath('//*[@id="box_product"]').css('div.product')
+        for item in items:
+            Ram = ''
+            CPU = ''
+            kich_thuoc_man_hinh = ''
+            ROM = ''
+            do_phan_giai_man_hinh = ''
+            Pin = ''
+            Camera_sau = ''
+            Camera_truoc = ''
+            bluetooth = ''
+            link = item.css('div.frame_inner')[0].css('a').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            try:
+                # print(link)
+                # print(len(soup.find_all('table', class_='charactestic_table_detail')))
+                informations = soup.find_all('table', class_='charactestic_table_detail')[0].find_all('tr')
+                for information in informations:
+                    if information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                     '') == 'Mànhìnhrộng:':
+                        kich_thuoc_man_hinh = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                          '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Độphângiải:':
+                        do_phan_giai_man_hinh = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                            '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Ram:':
+                        Ram = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                          '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Bộnhớtrong:':
+                        ROM = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                          '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'CPU:':
+                        CPU = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                          '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'CameraSau:':
+                        Camera_sau = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                 '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Cameratrước:':
+                        Camera_truoc = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                   '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Dunglượngpin:':
+                        Pin = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                          '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Bluetooth:':
+                        bluetooth = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                '').replace(
+                            '\n', '')
+
+                yield {
+                    'Tên sản phẩm': item.css('div.name h3::text').get(),
+                    'Giá sản phẩm': str(item.css('span.price::text').get()).replace('đ', ' VNĐ'),
+                    'Kích thước màn hình': kich_thuoc_man_hinh,
+                    'Độ phân giải màn hình': do_phan_giai_man_hinh,
+                    'Ram': Ram,
+                    'Bộ nhớ trong': ROM,
+                    'CPU': CPU,
+                    'Camera sau': Camera_sau,
+                    'Camera trước': Camera_truoc,
+                    'Pin': Pin,
+                    'Bluetooth': bluetooth,
+                    'Link': link
+                }
+            except:
+                continue
+
+
+class watch_24hstore(scrapy.Spider):
+    name = 'watch_24hstore'
+    start_urls = ["https://24hstore.vn/apple-watch-chinh-hang"]
+    script = """
+            function main(splash)
+                local url = splash.args.url
+                assert(splash:go(url))
+                assert(splash:wait(1))
+                assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementById("load_more_button").click();}'))
+                assert(splash:wait(1))
+                return {
+                    html = splash:html(),
+                    url = splash:url(),
+                }
+            end
+            """
+
+    def start_requests(self):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+        for url in self.start_urls:
+            yield SplashRequest(
+                url,
+                callback=self.parse,
+                headers=headers,
+                meta={
+                    "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+                },
+            )
+
+    def parse(self, response):
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
+        items = response.xpath('//*[@id="box_product"]').css('div.product')
+        for item in items:
+            loai_man_hinh = ''
+            chip = ''
+            tinh_nang_khac = ''
+            pin = ''
+            bluetooth = ''
+            ho_tro_sim = ''
+            link = item.css('div.frame_inner')[0].css('a').attrib['href']
+            req = requests.get(link, headers=headers)
+            soup = BeautifulSoup(req.text, "lxml")
+            try:
+                informations = soup.find_all('table', class_='charactestic_table_detail')[0].find_all('tr')
+                for information in informations:
+                    if information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                     '') == 'Mànhình:':
+                        loai_man_hinh = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                    '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'CPU:':
+                        chip = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                           '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'DunglượngPin:':
+                        pin = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                          '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'SIM:':
+                        ho_tro_sim = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                 '').replace(
+                            '\n', '')
+                    elif information.find_all('td')[0].text.replace(' ', '').replace('\r', '').replace('\n',
+                                                                                                       '') == 'Kếtnối:':
+                        bluetooth = information.find_all('td')[1].text.replace(' ', '').replace('\r',
+                                                                                                '').replace(
+                            '\n', '')
+
+                yield {
+                    'Tên sản phẩm': item.css('div.name h3::text').get(),
+                    'Giá sản phẩm': str(item.css('span.price::text').get()).replace('đ', ' VNĐ'),
+                    'loại màn hình': loai_man_hinh,
+                    'Chip': chip,
+                    'Pin': pin,
+                    'Sim': ho_tro_sim,
+                    'Bluetooth': bluetooth,
+                    'Link': link
+                }
+            except:
+                continue
