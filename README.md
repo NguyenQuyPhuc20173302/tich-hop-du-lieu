@@ -56,3 +56,17 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - Pin
 - Bluetooth
 - Link
+
+## crawl trên các trang
+- Thê giới di dộng
+- Nguyễn Kim
+- 24h store
+- truesmart
+- oneway mobile
+- hoangha mobile
+- diện máy xanh
+- dienthoaimoi
+- Cellphone
+- ClickBuy
+- Mac One
+- xtmobile
