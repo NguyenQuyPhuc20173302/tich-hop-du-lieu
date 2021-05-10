@@ -31,6 +31,9 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - nguyenkim_watch
 - truesmart_iphone
 - iphone_24hstore
+- watch_24hstore  
+- xtsmart_iphone
+
 
 ## apple watch
 - Tên sản phẩm
@@ -70,3 +73,4 @@ cd vào mục crawl và chạy lệnh: pip install -r requirements.txt
 - ClickBuy
 - Mac One
 - xtmobile
+- xtsmart
