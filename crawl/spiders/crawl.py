@@ -26,15 +26,16 @@ class TheGioiDiDong_iphone(scrapy.Spider):
     def start_requests(self):
         headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0'}
         for url in self.start_urls:
-            yield SplashRequest(
-                url,
-                endpoint="render.html",
-                callback=self.parse,
-                headers=headers,
-                meta={
-                    "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
-                },
-            )
+            yield scrapy.Request(url=url, callback=self.parse, headers=headers)
+            # yield SplashRequest(
+            #     url,
+            #     endpoint="render.html",
+            #     callback=self.parse,
+            #     headers=headers,
+            #     meta={
+            #         "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
+            #     },
+            # )
 
     def parse(self, response):
         items = response.css('li.item')
@@ -85,7 +86,7 @@ class TheGioiDiDong_iphone(scrapy.Spider):
                 print()
 
             yield {
-                'Tên sản phẩm': item.css('h3::text').get(),
+                'Tên sản phẩm': str(item.css('h3::text').get()).replace('\n', ''),
                 'Giá sản phẩm': str(item.css('div.price strong::text').get()).replace('₫', ' VNĐ'),
                 'Kích thước màn hình': kich_thuoc_man_hinh,
                 'Ram': Ram,
@@ -1630,3 +1631,5 @@ class didongthongminh_iphone(scrapy.Spider):
                 'Camera trước': Camera_truoc,
                 "Link": link
             }
+
+
