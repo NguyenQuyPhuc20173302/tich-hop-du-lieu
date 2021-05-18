@@ -250,7 +250,7 @@ class Clickbuy_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementById("sb-infinite-scroll-load-more-1").getElementsByTagName("a")[0].click();}'))
-                assert(splash:wait(1))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
