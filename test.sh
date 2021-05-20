@@ -1,0 +1,17 @@
+scrapy crawl TheGioiDiDong_iphone -o TheGioiDiDong_iphone.csv
+scrapy crawl apple_watch_tgdd -o apple_watch_tgdd.csv
+scrapy crawl xtmobile_iphone -o xtmobile_iphone.csv
+scrapy crawl click_buy_iphone -o click_buy_iphone.csv
+scrapy crawl click_buy_apple_watch -o click_buy_apple_watch.csv
+scrapy crawl cell_phone_iphone -o cell_phone_iphone.csv
+scrapy crawl dienthoaimoi_applewatch -o dienthoaimoi_applewatch.csv
+scrapy crawl dien_may_xanh_iphone -o dien_may_xanh_iphone.csv
+scrapy crawl onewaymobile_watch -o onewaymobile_watch.csv
+scrapy crawl onewaymobile_iphone -o onewaymobile_iphone.csv
+scrapy crawl nguyenkim_watch -o nguyenkim_watch.csv
+scrapy crawl nguyenkim_iphone -o nguyenkim_iphone.csv
+scrapy crawl truesmart_iphone -o truesmart_iphone.csv
+scrapy crawl iphone_24hstore -o iphone_24hstore.csv
+scrapy crawl watch_24hstore -o watch_24hstore.csv
+scrapy crawl xtsmart_iphone -o xtsmart_iphone.csv
+scrapy crawl didongthongminh_iphone -o didongthongminh_iphone.csv

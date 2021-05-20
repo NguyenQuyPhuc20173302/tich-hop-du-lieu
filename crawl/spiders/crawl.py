@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 class TheGioiDiDong_iphone(scrapy.Spider):
-    name = 'iphone_TGDD'
+    name = 'TheGioiDiDong_iphone'
     # allowed_domains = ["thegioididong.com"]
     start_urls = ["https://www.thegioididong.com/dtdd-apple-iphone"]
     script = """
@@ -24,7 +24,8 @@ class TheGioiDiDong_iphone(scrapy.Spider):
             """
 
     def start_requests(self):
-        headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0'}
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         for url in self.start_urls:
             yield scrapy.Request(url=url, callback=self.parse, headers=headers)
             # yield SplashRequest(
@@ -97,7 +98,9 @@ class TheGioiDiDong_iphone(scrapy.Spider):
                 'Pin': Pin,
                 'Độ phân giải màn hình': do_phan_giai_man_hinh,
                 'Bluetooth': bluetooth,
-                'Link': link
+                'Link': link,
+                'Loại sản phẩm': 'IPHONE',
+                'Tên cửa hàng': 'THE GIOI DI DONG'
             }
 
 
@@ -111,9 +114,9 @@ class TheGioiDiDong_watch(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('try{document.getElementsByClassName("viewmore")[0].click();}catch(e){}'))
-                assert(splash:wait(1))
+                assert(splash:wait(2))
                 assert(splash:runjs('try{document.getElementsByClassName("viewmore")[0].click();}catch(e){}'))
-                assert(splash:wait(1))
+                assert(splash:wait(2))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -163,15 +166,17 @@ class TheGioiDiDong_watch(scrapy.Spider):
                 print()
 
             yield {
-                'Tên sản phẩm': item.css('h3::text').get(),
-                'Giá sản phẩm': item.css('div.price strong::text').get().replace('₫', ' VNĐ'),
+                'Tên sản phẩm': str(item.css('h3::text').get()).replace('\n', ''),
+                'Giá sản phẩm': str(item.css('strong.price::text').get()).replace('₫', ' VNĐ'),
                 'Loại màn hình': loai_man_hinh,
                 'Pin': pin,
                 'Tính năng': tinh_nang_khac,
                 'Hỗ trợ sim': ho_tro_sim,
                 'Chip': chip,
                 'Bluetooth': bluetooth,
-                'Link': link
+                'Link': link,
+                'Loại sản phẩm': 'APPLE WATCH',
+                'Cửa hàng': 'THE GIOI DI DONG'
             }
 
 
@@ -185,9 +190,9 @@ class xtmobile_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('try{document.getElementsByClassName("pagination-more")[0].getElementsByClassName("fa fa-caret-down")[0].click();}catch(e){}'))
-                assert(splash:wait(1))
+                assert(splash:wait(2))
                 assert(splash:runjs('try{document.getElementsByClassName("pagination-more")[0].getElementsByClassName("fa fa-caret-down")[0].click();}catch(e){}'))
-                assert(splash:wait(1))
+                assert(splash:wait(2))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -237,7 +242,10 @@ class xtmobile_iphone(scrapy.Spider):
                 'Bộ nhớ trong': thongtin[5].text,
                 'Thẻ sim': thongtin[6].text,
                 'Pin': thongtin[7].text,
-                'Hệ điều hành': thongtin[8].text
+                'Hệ điều hành': thongtin[8].text,
+                'Link': link,
+                'Loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'XTMOBILE'
             }
 
 
@@ -361,6 +369,8 @@ class Clickbuy_iphone(scrapy.Spider):
                 'Kích thước màn hình': kichthuocmanhinh,
                 'Bluetooth': '',
                 'Ram': ram,
+                'Loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'CLICK_BUY'
             }
 
 
@@ -373,7 +383,7 @@ class Clickbuy_Apple_Watch(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementById("sb-infinite-scroll-load-more-1").getElementsByTagName("a")[0].click();}'))
-                assert(splash:wait(1))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -448,7 +458,8 @@ class Clickbuy_Apple_Watch(scrapy.Spider):
                 'Bluetooth': None,
                 'Hỗ trợ sim': None,
                 'Link': link,
-
+                'Loại sản phẩm': 'APPLE WATCH',
+                'Cửa hàng': 'CLICK_BUY'
             }
 
 
@@ -461,7 +472,7 @@ class Cell_phone_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('document.getElementsByClassName("pagination")[1].getElementsByTagName("a")[0].click();'))
-                assert(splash:wait(1))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -507,6 +518,8 @@ class Cell_phone_iphone(scrapy.Spider):
                 "Bộ nhớ trong": thongtin.find_all('tr')[6].find_all('td')[1].text,
                 "Pin": thongtin.find_all('tr')[7].find_all('td')[1].text,
                 "Bluetooth": bluetooth,
+                'Loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'CELL_PHONE'
             }
         if str(response.css('ul.pagination')[1].css('a::text').get()) == 'Tiếp ':
             yield SplashRequest(
@@ -528,7 +541,7 @@ class dienthoaimoi_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("next-page")[0].click();'))
-                assert(splash:wait(3))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -605,7 +618,9 @@ class dienthoaimoi_iphone(scrapy.Spider):
                 "Đèn flash": flash,
                 "Pin": (pin == '' and None or pin),
                 "Hệ điều hành": he_dieu_hanh,
-                "Link": link
+                "Link": link,
+                'Loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'DIEN THOAI MOI'
             }
 
         yield SplashRequest(
@@ -627,7 +642,7 @@ class dienthoaimoi_applewatch(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("next-page")[0].click();'))
-                assert(splash:wait(3))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -693,7 +708,9 @@ class dienthoaimoi_applewatch(scrapy.Spider):
                 "Thời gian sử dụng": (thoi_gian_su_dung == '' and None or thoi_gian_su_dung),
                 'Hệ điều hành': (He_dieu_hanh == '' and None or He_dieu_hanh),
                 "Ngôn ngữ": (ngon_ngu == '' and None or ngon_ngu),
-                "Link": link
+                "Link": link,
+                "Thể loại sản phẩm": 'APPLE WATCH',
+                "Cửa hàng": 'DIEN THOAI MOI'
             }
 
         yield SplashRequest(
@@ -715,7 +732,7 @@ class dien_may_xanh_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("loadmore")[0].click();'))
-                assert(splash:wait(2))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -753,53 +770,9 @@ class dien_may_xanh_iphone(scrapy.Spider):
                 'Camera sau': str(thongtins.css('span::text')[2].get()).replace('Camera sau: ', ''),
                 'Camera trước': str(thongtins.css('span::text')[3].get()).replace('Camera trước:  ', ''),
                 'Pin': str(thongtins.css('span::text')[4].get()).split(', ')[0].replace('Pin ', ''),
-                'Sạc': str(thongtins.css('span::text')[4].get()).split(', ')[1].replace('Sạc ', '')
-            }
-
-
-class hoanghamobile_iphone(scrapy.Spider):
-    name = 'hoanghamobile_iphone'
-    start_urls = ["https://hoanghamobile.com/dien-thoai-di-dong/iphone"]
-    script = """
-            function main(splash)
-                local url = splash.args.url
-                assert(splash:go(url))
-                assert(splash:wait(1))
-                assert(splash:runjs('for(var i = 0 ; i < 3 ; i ++){document.getElementById("page-pager").getElementsByTagName("a")[0].click();}'))
-                assert(splash:wait(4))
-                return {
-                    html = splash:html(),
-                    url = splash:url(),
-                }
-            end
-            """
-
-    def start_requests(self):
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        for url in self.start_urls:
-            yield SplashRequest(
-                url,
-                callback=self.parse,
-                headers=headers,
-                # endpoint="render.html",
-                meta={
-                    "splash": {"endpoint": "execute", "args": {"lua_source": self.script}}
-                },
-            )
-
-    def parse(self, response):
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-        items = response.css('div.list-product')[0].css('div.item')
-        for item in items:
-            link = item.css('div.info')[0].css('a').attrib['href']
-            req = requests.get(link, headers=headers)
-            soup = BeautifulSoup(req.text, "lxml")
-            yield {
-                "Tên sản phẩm": item.css('div.info a::text').get(),
-                "Giá sản phẩm": str(item.css('span.price strong::text').get()).replace('₫', ' VNĐ'),
-                "Link": link
+                'Sạc': str(thongtins.css('span::text')[4].get()).split(', ')[1].replace('Sạc ', ''),
+                'Loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'DIEN MAY XANH'
             }
 
 
@@ -812,7 +785,7 @@ class onewaymobile_watch(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("next-page")[0].getElementsByTagName("i")[0].click();'))
-                assert(splash:wait(2))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -873,7 +846,9 @@ class onewaymobile_watch(scrapy.Spider):
                 "Pin": pin,
                 "Bluetooth": bluetooth,
                 "Hỗ trợ sim": ho_tro_sim,
-                "Link": link
+                "Link": link,
+                'Thể loại sản phẩm': 'APPLE WATCH',
+                'Cửa hàng': 'ONE WAY MOBILE'
             }
 
         yield SplashRequest(
@@ -895,7 +870,7 @@ class onewaymobile_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("next-page")[0].getElementsByTagName("i")[0].click();'))
-                assert(splash:wait(2))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -968,7 +943,9 @@ class onewaymobile_iphone(scrapy.Spider):
                 "Bluetooth": bluetooth,
                 "Camera sau": Camera_sau,
                 "Camera trước": Camera_truoc,
-                "Link": link
+                "Link": link,
+                'Thể loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'ONE WAY MOBILE'
             }
 
         yield SplashRequest(
@@ -990,7 +967,7 @@ class nguyenkim_watch(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("nki-arow-rounded-next")[0].click();'))
-                assert(splash:wait(2))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -1034,7 +1011,9 @@ class nguyenkim_watch(scrapy.Spider):
                 "Pin": pin,
                 "Bluetooth": bluetooth,
                 "Hỗ trợ sim": ho_tro_sim,
-                "Link": link
+                "Link": link,
+                'Thê loại sản phẩm': 'APPLE WATCH',
+                'Cửa hàng': 'NGUYEN KIM',
             }
 
         yield SplashRequest(
@@ -1056,7 +1035,7 @@ class nguyenkim_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("nki-arow-rounded-next")[0].click();'))
-                assert(splash:wait(2))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -1126,7 +1105,9 @@ class nguyenkim_iphone(scrapy.Spider):
                 "Camera trước": Camera_truoc,
                 "Pin": Pin,
                 "Bluetooth": bluetooth,
-                "Link": link
+                "Link": link,
+                'Thể loại sản phẩm': 'IPHONE',
+                'Cửa hàng': 'NGUYEN KIM'
             }
 
         yield SplashRequest(
@@ -1154,7 +1135,7 @@ class truesmart_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(2))
                 assert(splash:runjs('document.getElementsByClassName("nki-arow-rounded-next")[0].click();'))
-                assert(splash:wait(2))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -1236,7 +1217,9 @@ class truesmart_iphone(scrapy.Spider):
                 "CPU": CPU,
                 "RAM": Ram,
                 "Pin": Pin,
-                'Link': link
+                'Link': link,
+                'Thể loại sản phẩm':'IPHONE',
+                'Cửa hàng': 'TRUE SMART'
             }
 
 
@@ -1249,7 +1232,7 @@ class iphone_24hstore(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementById("load_more_button").click();}'))
-                assert(splash:wait(1))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -1351,7 +1334,9 @@ class iphone_24hstore(scrapy.Spider):
                     'Camera trước': Camera_truoc,
                     'Pin': Pin,
                     'Bluetooth': bluetooth,
-                    'Link': link
+                    'Link': link,
+                    'Thể loại sản phẩm': 'IPHONE',
+                    'Cửa hàng':'24h STORE'
                 }
             except:
                 continue
@@ -1366,7 +1351,7 @@ class watch_24hstore(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementById("load_more_button").click();}'))
-                assert(splash:wait(1))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -1440,7 +1425,9 @@ class watch_24hstore(scrapy.Spider):
                     'Sim': ho_tro_sim,
                     'Bluetooth': bluetooth,
                     'Tính năng': tinh_nang_khac,
-                    'Link': link
+                    'Link': link,
+                    'Thể loại sản phẩm':'APPLE WATCH',
+                    'Cửa hàng':'24H STORE'
                 }
             except:
                 continue
@@ -1455,7 +1442,7 @@ class xtsmart_iphone(scrapy.Spider):
                 assert(splash:go(url))
                 assert(splash:wait(1))
                 assert(splash:runjs('for(var i = 0 ; i < 10 ; i ++){document.getElementsByClassName("pagination-more")[0].getElementsByTagName("i")[0].click()}'))
-                assert(splash:wait(1))
+                assert(splash:wait(5))
                 return {
                     html = splash:html(),
                     url = splash:url(),
@@ -1526,7 +1513,9 @@ class xtsmart_iphone(scrapy.Spider):
                 "Bluetooth": bluetooth,
                 "Camera sau": Camera_sau,
                 'Camera trước': Camera_truoc,
-                "Link": link
+                "Link": link,
+                'Thể loại sản phẩm':'IPHONE',
+                'Cửa hàng': 'XTSMART'
             }
 
 
@@ -1629,7 +1618,7 @@ class didongthongminh_iphone(scrapy.Spider):
                 "Bluetooth": bluetooth,
                 "Camera sau": Camera_sau,
                 'Camera trước': Camera_truoc,
-                "Link": link
+                "Link": link,
+                'Thể loại sản phẩm':'IPHONE',
+                'Cửa hàng':'DI DONG THONG MINH',
             }
-
-
